@@ -23,7 +23,7 @@ Or install it yourself as:
 
 ## Usage
 
-To start using the gem provide an [api token](https://developer.yahoo.com/flurry/docs/api/code/apptoken/) through `Flurry#configure`.
+To start using the gem provide an [api token] through `Flurry#configure`.
 The results are displayed in UTC time zone (as defined in Flurry), this can be changed by setting the time_zone param:
 ```ruby
 Flurry.configure do |config|
@@ -56,11 +56,14 @@ Flurry.from(:app_usage).select(:sessions).showing(app: :id, platform: :name).bet
 ## Contributing
 
 1. Fork the project https://github.com/rbague/flurry/fork
-2. Run `bundle` and `bundle exec rake`
-3. Make your feature or bug fix
-4. Add tests for it. This is important so that it does not break in a future version unintentionally.
-5. Submit a new Pull Request
+2. Get an [api token] and set it to `FLURRY_TOKEN` environment variable
+3. Run `bundle` and `bundle exec rake`
+4. Make your feature or bug fix
+5. Add tests for it. This is important so that it does not break in a future version.
+6. Submit a new Pull Request
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+[api token]: https://developer.yahoo.com/flurry/docs/api/code/apptoken/
