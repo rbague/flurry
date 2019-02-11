@@ -57,6 +57,7 @@ RSpec.describe Flurry do
       expect(base.select(:sessions).send(:metrics_partial_path)).to eq '&metrics=sessions'
       expect(base.select([:sessions]).send(:metrics_partial_path)).to eq '&metrics=sessions'
       expect(base.select(:active_users, 'newDevices').send(:metrics_partial_path)).to eq '&metrics=activeUsers,newDevices'
+      expect(base.select(:active_users, :new_devices).send(:metrics_partial_path)).to eq '&metrics=activeUsers,newDevices'
     end
 
     it 'should build time range partial' do
