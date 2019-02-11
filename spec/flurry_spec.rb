@@ -18,13 +18,15 @@ RSpec.describe Flurry do
     expect(Flurry.from(:app_usage, :day)).to be_a(Flurry::Request)
   end
 
-  it 'should build the right url' do
+  it 'should build the right url', focus: true do
     token = Flurry.configuration.token
 
     expect(Flurry.from(:app_usage).select(:sessions).between(@now).send(:full_path))
       .to eq "/appUsage/day?token=#{token}&metrics=sessions&dateTime=2019-01-20/2019-01-21"
     expect(Flurry.from(:app_usage).select(:sessions).showing(app: :id).between(@now).send(:full_path))
       .to eq "/appUsage/day/app;show=id?token=#{token}&metrics=sessions&dateTime=2019-01-20/2019-01-21"
+    expect(Flurry.from(:app_usage).select(:sessions).showing(app: :id).between(@now).sort(:sessions).send(:full_path))
+      .to eq "/appUsage/day/app;show=id?token=#{token}&metrics=sessions&sort=sessions|desc&dateTime=2019-01-20/2019-01-21"
   end
 
   describe 'path partials' do
@@ -66,6 +68,21 @@ RSpec.describe Flurry do
       expect(base.between(@now, @now + 1).send(:time_range_partial_path)).to eq '&dateTime=2019-01-20/2019-01-21'
       expect(base.between(@now, format: '%Y-%m-%dT%H').send(:time_range_partial_path)).to eq '&dateTime=2019-01-20T00/2019-01-21T00'
       expect(base.between(@now, @now + 2, format: '%Y-%m-%dT%H').send(:time_range_partial_path)).to eq '&dateTime=2019-01-20T00/2019-01-22T00'
+    end
+
+    it 'should build sort partial' do
+      base = Flurry.from(:app_usage).select(:sessions, :new_devices)
+
+      expect { Flurry.from(:app_usage).sort(sessions: :asc) }.to raise_error(Flurry::Error)
+      expect(base.sort(page_views: :asc).send(:sort_partial_path)).to be_empty
+      expect(base.sort(nil: :asc).send(:sort_partial_path)).to be_empty
+      expect(base.sort(:sessions).send(:sort_partial_path)).to eq '&sort=sessions|desc'
+      expect(base.sort(sessions: :asc).send(:sort_partial_path)).to eq '&sort=sessions|asc'
+      expect(base.sort(sessions: :asc, page_views: :desc).send(:sort_partial_path)).to eq '&sort=sessions|asc'
+      expect(base.sort(sessions: :asc, new_devices: nil).send(:sort_partial_path)).to eq '&sort=sessions|asc,newDevices|desc'
+      expect(base.sort(sessions: :asc, new_devices: :desc).send(:sort_partial_path)).to eq '&sort=sessions|asc,newDevices|desc'
+      expect(base.sort({ sessions: :asc }, 5).send(:sort_partial_path)).to eq '&topN=5&sort=sessions|asc'
+      expect(base.sort({}, 5).send(:sort_partial_path)).to be_empty
     end
   end
 end

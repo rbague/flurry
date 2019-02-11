@@ -37,13 +37,23 @@ module Flurry
       dup.tap { |it| it.range = [start, finish] }
     end
 
+    def sort(sorts, top = 0)
+      raise Flurry::Error, 'metrics must be provided before sort' unless @metrics
+
+      sorts = { sorts => nil } unless sorts.is_a?(Hash)
+      dup.tap do |it|
+        it.sorts = clean_sorts(sorts || {})
+        it.top = top
+      end
+    end
+
     def fetch
       self.class.get(full_path).response
     end
 
     protected
 
-    attr_writer :table, :grain, :dimensions, :metrics, :range
+    attr_writer :table, :grain, :dimensions, :metrics, :range, :sorts, :top
 
     private
 
@@ -53,6 +63,15 @@ module Flurry
         new_value ||= val
         new_value.map! { |v| camelize(v.to_s) unless v.nil? }
         h[camelize(key.to_s)] = new_value
+      end
+    end
+
+    def clean_sorts(sorts)
+      sorts.each_with_object({}) do |(key, val), h|
+        next if key.nil?
+
+        k = camelize(key.to_s)
+        h[k] = val || :desc if @metrics.include? k
       end
     end
 
@@ -81,6 +100,16 @@ module Flurry
       "&dateTime=#{@range.join('/')}"
     end
 
+    def sort_partial_path
+      return '' unless @sorts && @sorts.any?
+
+      partial = ("&topN=#{@top}" if @top && @top.positive?) || ''
+      partial.tap do |path|
+        path << '&sort='
+        path << @sorts.map { |k, v| "#{k}|#{v}" }.join(',')
+      end
+    end
+
     def full_path
       ''.tap do |path|
         path << base_partial_path
@@ -89,6 +118,7 @@ module Flurry
         path << 'token=' + Flurry.configuration.token
         path << '&timeZone=' + Flurry.configuration.time_zone if Flurry.configuration.time_zone
         path << metrics_partial_path
+        path << sort_partial_path
         path << time_range_partial_path
       end
     end
