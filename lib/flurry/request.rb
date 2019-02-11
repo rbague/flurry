@@ -23,7 +23,7 @@ module Flurry
       metrics = metrics.flatten.reject(&:nil?) || []
       raise Flurry::Error, 'at least one metric has to be provided' if metrics.empty?
 
-      dup.tap { |it| it.metrics = metrics }
+      dup.tap { |it| it.metrics = metrics.map { |m| camelize(m.to_s) } }
     end
 
     def between(start, finish = nil, format: '%Y-%m-%d')
@@ -73,7 +73,7 @@ module Flurry
 
     def metrics_partial_path
       '&metrics=' + @metrics.map do |metric|
-        camelize(metric.to_s) unless metric.nil?
+        metric unless metric.nil?
       end.join(',')
     end
 
