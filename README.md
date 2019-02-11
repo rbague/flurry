@@ -40,7 +40,10 @@ require 'flurry'
 Flurry.from(:app_usage).select(:sessions).between(Date.today).fetch # HTTP::Response
 
 # Same as above but grouping by hour
-Flurry.from(:app_usage, :hour).select(:sessions).between(Date.today).fetch # HTTP::Response
+Flurry.from(:app_usage, :hour).select(:sessions).between(Date.today).fetch
+
+# Use the sort method to sort the query results. Defaults to descending
+Flurry.from(:app_usage).select(:sessions).sort(sessions: :asc).between(Date.today).fetch
 
 # Gets the results from last week, also returning the app id, and the platform name (showing accepts an array as the key values)
 Flurry.from(:app_usage).select(:sessions).showing(app: :id, platform: :name).between(Date.today - 7, Date.today).fetch
@@ -48,7 +51,7 @@ Flurry.from(:app_usage).select(:sessions).showing(app: :id, platform: :name).bet
 
 ## TODO
 
-- [ ] Sort by metrics (select)
+- [x] Sort by metrics (select)
 - [ ] Filter by dimension (showing)
 - [ ] Havings
 - [ ] Response format
