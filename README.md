@@ -5,6 +5,8 @@
 
 Flurry provides easy access to [Flurry Analytics Reporting API](https://developer.yahoo.com/flurry/docs/api/code/analyticsapi/)
 
+Keep track of changes in [Changelog](https://github.com/rbague/flurry/blob/master/CHANGELOG.md)
+
 ## Installation
 
 Add this line to your application's Gemfile:
