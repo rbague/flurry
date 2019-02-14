@@ -18,7 +18,7 @@ RSpec.describe Flurry do
     expect(Flurry.from(:app_usage, :day)).to be_a(Flurry::Request)
   end
 
-  it 'should build the right url', focus: true do
+  it 'should build the right url' do
     token = Flurry.configuration.token
 
     expect(Flurry.from(:app_usage).select(:sessions).between(@now).send(:full_path))
@@ -27,6 +27,8 @@ RSpec.describe Flurry do
       .to eq "/appUsage/day/app;show=id?token=#{token}&metrics=sessions&dateTime=2019-01-20/2019-01-21"
     expect(Flurry.from(:app_usage).select(:sessions).showing(app: :id).between(@now).sort(:sessions).send(:full_path))
       .to eq "/appUsage/day/app;show=id?token=#{token}&metrics=sessions&sort=sessions|desc&dateTime=2019-01-20/2019-01-21"
+    expect(Flurry.from(:app_usage).select(:sessions).showing(app: :id).between(@now).having(sessions: { gt: 10, lt: 20 }).sort(:sessions).send(:full_path))
+      .to eq "/appUsage/day/app;show=id?token=#{token}&metrics=sessions&sort=sessions|desc&having=sessions-gt[10],sessions-lt[20]&dateTime=2019-01-20/2019-01-21"
   end
 
   describe 'path partials' do
@@ -84,6 +86,22 @@ RSpec.describe Flurry do
       expect(base.sort(sessions: :asc, new_devices: :desc).send(:sort_partial_path)).to eq '&sort=sessions|asc,newDevices|desc'
       expect(base.sort({ sessions: :asc }, 5).send(:sort_partial_path)).to eq '&topN=5&sort=sessions|asc'
       expect(base.sort({}, 5).send(:sort_partial_path)).to be_empty
+    end
+
+    it 'should build having partial' do
+      base = Flurry.from(:app_usage).select(:sessions, :new_devices)
+
+      expect { Flurry.from(:app_usage).having(sessions: { gt: 100 }) }.to raise_error(Flurry::Error)
+      expect(base.having({}).send(:having_partial_path)).to be_empty
+      expect(base.having.send(:having_partial_path)).to be_empty
+      expect(base.having(page_views: { eq: 0 }).send(:having_partial_path)).to be_empty
+      expect(base.having(nil: { gt: 100 }).send(:having_partial_path)).to be_empty
+      expect(base.having(sessions: {}).send(:having_partial_path)).to be_empty
+      expect(base.having(sessions: { gt: 100 }).send(:having_partial_path)).to eq '&having=sessions-gt[100]'
+      expect(base.having('newDevices': { gt: 100 }).send(:having_partial_path)).to eq '&having=newDevices-gt[100]'
+      expect(base.having(sessions: { gt: 100, lt: 100 }).send(:having_partial_path)).to eq '&having=sessions-gt[100],sessions-lt[100]'
+      expect(base.having(sessions: {}, new_devices: { gt: 100 }).send(:having_partial_path)).to eq '&having=newDevices-gt[100]'
+      expect(base.having(sessions: { lt: 100 }, new_devices: { gt: 100 }).send(:having_partial_path)).to eq '&having=sessions-lt[100],newDevices-gt[100]'
     end
   end
 end

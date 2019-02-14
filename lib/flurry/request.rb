@@ -47,13 +47,19 @@ module Flurry
       end
     end
 
+    def having(**havings)
+      raise Flurry::Error, 'metrics must be provided before having' unless @metrics
+
+      dup.tap { |it| it.havings = clean_havings(havings || {}) }
+    end
+
     def fetch
       self.class.get(full_path).response
     end
 
     protected
 
-    attr_writer :table, :grain, :dimensions, :metrics, :range, :sorts, :top
+    attr_writer :table, :grain, :dimensions, :metrics, :range, :sorts, :top, :havings
 
     private
 
@@ -72,6 +78,15 @@ module Flurry
 
         k = camelize(key.to_s)
         h[k] = val || :desc if @metrics.include? k
+      end
+    end
+
+    def clean_havings(sorts)
+      sorts.each_with_object({}) do |(key, val), h|
+        next if key.nil? || val.nil? || val.empty?
+
+        k = camelize(key.to_s)
+        h[k] = val if @metrics.include? k
       end
     end
 
@@ -110,6 +125,14 @@ module Flurry
       end
     end
 
+    def having_partial_path
+      return '' unless @havings && @havings.any?
+
+      '&having=' + @havings.map do |metric, hs|
+        hs.map { |k, v| "#{metric}-#{k}[#{v}]" }.join(',')
+      end.join(',')
+    end
+
     def full_path
       ''.tap do |path|
         path << base_partial_path
@@ -119,6 +142,7 @@ module Flurry
         path << '&timeZone=' + Flurry.configuration.time_zone if Flurry.configuration.time_zone
         path << metrics_partial_path
         path << sort_partial_path
+        path << having_partial_path
         path << time_range_partial_path
       end
     end
