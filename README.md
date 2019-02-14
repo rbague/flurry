@@ -49,13 +49,16 @@ Flurry.from(:app_usage).select(:sessions).sort(sessions: :asc).between(Date.toda
 
 # Gets the results from last week, also returning the app id, and the platform name (showing accepts an array as the key values)
 Flurry.from(:app_usage).select(:sessions).showing(app: :id, platform: :name).between(Date.today - 7, Date.today).fetch
+
+# To get only the metrics that match a condition: (gt, lt, eq)
+Flurry.from(:app_usage).select(:sessions).having(sessions: { gt: 10, lt: 100 }).between(Date.today).fetch
 ```
 
 ## TODO
 
 - [x] Sort by metrics (select)
 - [ ] Filter by dimension (showing)
-- [ ] Havings
+- [x] Havings
 - [ ] Response format
 
 ## Contributing
