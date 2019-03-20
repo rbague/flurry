@@ -50,6 +50,15 @@ RSpec.describe Flurry do
       expect(base.showing(app_version: :id).send(:dimensions_partial_path)).to eq '/appVersion;show=id'
     end
 
+    it 'should build time zone partial' do
+      base = Flurry.from(:app_usage)
+
+      expect(base.send(:time_zone_partial_path)).to be_empty
+      expect(base.time_zone('').send(:time_zone_partial_path)).to be_empty
+      expect(base.time_zone(nil).send(:time_zone_partial_path)).to be_empty
+      expect(base.time_zone('Europe/Madrid').send(:time_zone_partial_path)).to eq '&timeZone=Europe/Madrid'
+    end
+
     it 'should build format partial' do
       base = Flurry.from(:app_usage)
 

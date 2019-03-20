@@ -53,6 +53,10 @@ module Flurry
       dup.tap { |it| it.havings = clean_havings(havings || {}) }
     end
 
+    def time_zone(time_zone)
+      dup.tap { |it| it.time_zone = time_zone }
+    end
+
     def format(format)
       dup.tap { |it| it.format = format }
     end
@@ -63,7 +67,7 @@ module Flurry
 
     protected
 
-    attr_writer :table, :grain, :dimensions, :metrics, :range, :sorts, :top, :havings, :format
+    attr_writer :table, :grain, :dimensions, :metrics, :range, :sorts, :top, :havings, :time_zone, :format
 
     private
 
@@ -137,6 +141,12 @@ module Flurry
       end.join(',')
     end
 
+    def time_zone_partial_path
+      time_zone = @time_zone || Flurry.configuration.time_zone
+      return '' if time_zone.nil? || time_zone.empty?
+      '&timeZone=' + time_zone.to_s
+    end
+
     def format_partial_path
       format = @format || Flurry.configuration.format
       return '' if format.nil? || format.empty?
@@ -149,7 +159,7 @@ module Flurry
         path << dimensions_partial_path
         path << '?'
         path << 'token=' + Flurry.configuration.token
-        path << '&timeZone=' + Flurry.configuration.time_zone if Flurry.configuration.time_zone
+        path << time_zone_partial_path
         path << format_partial_path
         path << metrics_partial_path
         path << sort_partial_path

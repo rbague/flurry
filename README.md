@@ -57,7 +57,7 @@ Flurry.from(:app_usage).select(:sessions).showing(app: :id, platform: :name).bet
 Flurry.from(:app_usage).select(:sessions).having(sessions: { gt: 10, lt: 100 }).between(Date.today).fetch
 
 # Change default configuration per request
-Flurry.from(:app_usage).format(:csv)
+Flurry.from(:app_usage).format(:csv).time_zone('Europe/Madrid')
 ```
 
 ## TODO
