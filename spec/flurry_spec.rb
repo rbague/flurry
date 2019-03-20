@@ -18,6 +18,20 @@ RSpec.describe Flurry do
     expect(Flurry.from(:app_usage, :day)).to be_a(Flurry::Request)
   end
 
+  it 'should override the default settings' do
+    Flurry.configuration.format = :json
+    Flurry.configuration.time_zone = 'Etc/UTC'
+
+    base = Flurry.from(:app_usage)
+    expect(base.send(:format_partial_path)).to eq '&format=json'
+    expect(base.format(:csv).send(:format_partial_path)).to eq '&format=csv'
+    expect(base.send(:time_zone_partial_path)).to eq '&timeZone=Etc/UTC'
+    expect(base.time_zone('Europe/Madrid').send(:time_zone_partial_path)).to eq '&timeZone=Europe/Madrid'
+
+    Flurry.configuration.format = nil
+    Flurry.configuration.time_zone = nil
+  end
+
   it 'should build the right url' do
     token = Flurry.configuration.token
 
