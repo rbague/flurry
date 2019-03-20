@@ -26,11 +26,14 @@ Or install it yourself as:
 ## Usage
 
 To start using the gem provide an [api token] through `Flurry#configure`.
-The results are displayed in UTC time zone (as defined in Flurry), this can be changed by setting the time_zone param:
+The results are displayed in UTC time zone and JSON format (as defined in Flurry), this can be changed by setting the respective configuration:
 ```ruby
 Flurry.configure do |config|
   config.token = ENV['FLURRY_API_TOKEN']
+
+  # Optional configuration
   config.time_zone = 'Europe/Madrid'
+  config.format = :csv
 end
 ```
 
@@ -52,6 +55,9 @@ Flurry.from(:app_usage).select(:sessions).showing(app: :id, platform: :name).bet
 
 # To get only the metrics that match a condition: (gt, lt, eq)
 Flurry.from(:app_usage).select(:sessions).having(sessions: { gt: 10, lt: 100 }).between(Date.today).fetch
+
+# Change default configuration per request
+Flurry.from(:app_usage).format(:csv)
 ```
 
 ## TODO
@@ -59,7 +65,7 @@ Flurry.from(:app_usage).select(:sessions).having(sessions: { gt: 10, lt: 100 }).
 - [x] Sort by metrics (select)
 - [ ] Filter by dimension (showing)
 - [x] Havings
-- [ ] Response format
+- [x] Response format
 
 ## Contributing
 

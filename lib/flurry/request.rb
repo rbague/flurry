@@ -53,13 +53,17 @@ module Flurry
       dup.tap { |it| it.havings = clean_havings(havings || {}) }
     end
 
+    def format(format)
+      dup.tap { |it| it.format = format }
+    end
+
     def fetch
       self.class.get(full_path).response
     end
 
     protected
 
-    attr_writer :table, :grain, :dimensions, :metrics, :range, :sorts, :top, :havings
+    attr_writer :table, :grain, :dimensions, :metrics, :range, :sorts, :top, :havings, :format
 
     private
 
@@ -133,6 +137,12 @@ module Flurry
       end.join(',')
     end
 
+    def format_partial_path
+      format = @format || Flurry.configuration.format
+      return '' if format.nil? || format.empty?
+      '&format=' + format.to_s
+    end
+
     def full_path
       ''.tap do |path|
         path << base_partial_path
@@ -140,6 +150,7 @@ module Flurry
         path << '?'
         path << 'token=' + Flurry.configuration.token
         path << '&timeZone=' + Flurry.configuration.time_zone if Flurry.configuration.time_zone
+        path << format_partial_path
         path << metrics_partial_path
         path << sort_partial_path
         path << having_partial_path
