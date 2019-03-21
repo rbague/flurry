@@ -28,11 +28,10 @@ module Flurry
 
     def between(start, finish = nil, format: '%Y-%m-%d')
       raise Flurry::Error, 'at least start time has to be provided' unless start
-      raise ArgumentError, 'start must be a Time/Date/DateTime' unless datetime?(start)
-      raise ArgumentError, 'finish must be a Time/Date/DateTime' if finish && !datetime?(finish)
 
-      finish = (finish || tomorrow(start)).strftime(format)
-      start = start.strftime(format)
+      finish ||= datetime?(start) ? tomorrow(start) : start
+      finish = finish.strftime(format) if datetime? finish
+      start = start.strftime(format) if datetime? start
 
       dup.tap { |it| it.range = [start, finish] }
     end

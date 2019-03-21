@@ -104,6 +104,9 @@ RSpec.describe Flurry do
       expect(base.between(@now, @now + 1).send(:time_range_partial_path)).to eq '&dateTime=2019-01-20/2019-01-21'
       expect(base.between(@now, format: '%Y-%m-%dT%H').send(:time_range_partial_path)).to eq '&dateTime=2019-01-20T00/2019-01-21T00'
       expect(base.between(@now, @now + 2, format: '%Y-%m-%dT%H').send(:time_range_partial_path)).to eq '&dateTime=2019-01-20T00/2019-01-22T00'
+      expect(base.between(@now, '2019-02-15').send(:time_range_partial_path)).to eq '&dateTime=2019-01-20/2019-02-15'
+      expect(base.between('2019-01-15', @now).send(:time_range_partial_path)).to eq '&dateTime=2019-01-15/2019-01-20'
+      expect(base.between('2019-02-15').send(:time_range_partial_path)).to eq '&dateTime=2019-02-15/2019-02-15' # does not convert finish to start + 1 if start is a String
     end
 
     it 'should build sort partial' do
