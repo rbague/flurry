@@ -34,6 +34,7 @@ Flurry.configure do |config|
   # Optional configuration
   config.time_zone = 'Europe/Madrid'
   config.format = :csv
+  config.timeout = 30 # Timeout for opening connection and reading data
 end
 ```
 

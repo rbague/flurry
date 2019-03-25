@@ -60,8 +60,10 @@ module Flurry
       dup.tap { |it| it.format = format }
     end
 
-    def fetch
-      self.class.get(full_path).response
+    def fetch(timeout = Flurry.configuration.timeout)
+      options = {}
+      options[:timeout] = timeout if timeout
+      self.class.get(full_path, options).response
     end
 
     protected
