@@ -16,14 +16,17 @@ module Flurry
     end
 
     def showing(**dimensions)
-      dup.tap { |it| it.dimensions = clean_dimensions(dimensions || {}) }
+      dup.tap { |it| it.dimensions = merge(it.dimensions, clean_dimensions(dimensions || {})) }
     end
 
     def select(*metrics)
       metrics = metrics.flatten.reject(&:nil?) || []
       raise Flurry::Error, 'at least one metric has to be provided' if metrics.empty?
 
-      dup.tap { |it| it.metrics = metrics.map { |m| camelize(m.to_s) } }
+      dup.tap do |it|
+        it.metrics ||= []
+        it.metrics |= metrics.map { |m| camelize(m.to_s) }
+      end
     end
 
     def between(start, finish = nil, format: '%Y-%m-%d')
@@ -41,7 +44,7 @@ module Flurry
 
       sorts = { sorts => nil } unless sorts.is_a?(Hash)
       dup.tap do |it|
-        it.sorts = clean_sorts(sorts || {})
+        it.sorts = merge(it.sorts, clean_sorts(sorts || {}))
         it.top = top
       end
     end
@@ -49,7 +52,7 @@ module Flurry
     def having(**havings)
       raise Flurry::Error, 'metrics must be provided before having' unless @metrics
 
-      dup.tap { |it| it.havings = clean_havings(havings || {}) }
+      dup.tap { |it| it.havings = merge(it.havings, clean_havings(havings || {})) }
     end
 
     def time_zone(time_zone)
@@ -68,7 +71,8 @@ module Flurry
 
     protected
 
-    attr_writer :table, :grain, :dimensions, :metrics, :range, :sorts, :top, :havings, :time_zone, :format
+    attr_writer :table, :grain, :range, :top, :time_zone, :format
+    attr_accessor :dimensions, :metrics, :sorts, :havings
 
     private
 

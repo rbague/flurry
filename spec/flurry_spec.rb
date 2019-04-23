@@ -62,6 +62,8 @@ RSpec.describe Flurry do
       expect(base.showing(app: %w[id platform|name]).send(:dimensions_partial_path)).to eq '/app;show=id,platform|name'
       expect(base.showing(app: :id, platform: %i[id name]).send(:dimensions_partial_path)).to eq '/app;show=id/platform;show=id,name'
       expect(base.showing(app_version: :id).send(:dimensions_partial_path)).to eq '/appVersion;show=id'
+      expect(base.showing(app: :id).showing(platform: :name).send(:dimensions_partial_path)).to eq '/app;show=id/platform;show=name'
+      expect(base.showing(app: :id).showing(app: :name).send(:dimensions_partial_path)).to eq '/app;show=id,name'
     end
 
     it 'should build time zone partial' do
@@ -93,6 +95,7 @@ RSpec.describe Flurry do
       expect(base.select([:sessions]).send(:metrics_partial_path)).to eq '&metrics=sessions'
       expect(base.select(:active_users, 'newDevices').send(:metrics_partial_path)).to eq '&metrics=activeUsers,newDevices'
       expect(base.select(:active_users, :new_devices).send(:metrics_partial_path)).to eq '&metrics=activeUsers,newDevices'
+      expect(base.select(:active_users).select(:new_devices).send(:metrics_partial_path)).to eq '&metrics=activeUsers,newDevices'
     end
 
     it 'should build time range partial' do
@@ -120,6 +123,8 @@ RSpec.describe Flurry do
       expect(base.sort(sessions: :asc, page_views: :desc).send(:sort_partial_path)).to eq '&sort=sessions|asc'
       expect(base.sort(sessions: :asc, new_devices: nil).send(:sort_partial_path)).to eq '&sort=sessions|asc,newDevices|desc'
       expect(base.sort(sessions: :asc, new_devices: :desc).send(:sort_partial_path)).to eq '&sort=sessions|asc,newDevices|desc'
+      expect(base.sort(sessions: :asc).sort(new_devices: :desc).send(:sort_partial_path)).to eq '&sort=sessions|asc,newDevices|desc'
+      expect(base.sort(sessions: :asc).sort(sessions: :desc).send(:sort_partial_path)).to eq '&sort=sessions|desc'
       expect(base.sort({ sessions: :asc }, 5).send(:sort_partial_path)).to eq '&topN=5&sort=sessions|asc'
       expect(base.sort({}, 5).send(:sort_partial_path)).to be_empty
     end
@@ -138,6 +143,8 @@ RSpec.describe Flurry do
       expect(base.having(sessions: { gt: 100, lt: 100 }).send(:having_partial_path)).to eq '&having=sessions-gt[100],sessions-lt[100]'
       expect(base.having(sessions: {}, new_devices: { gt: 100 }).send(:having_partial_path)).to eq '&having=newDevices-gt[100]'
       expect(base.having(sessions: { lt: 100 }, new_devices: { gt: 100 }).send(:having_partial_path)).to eq '&having=sessions-lt[100],newDevices-gt[100]'
+      expect(base.having(sessions: { lt: 100 }).having(new_devices: { gt: 100 }).send(:having_partial_path)).to eq '&having=sessions-lt[100],newDevices-gt[100]'
+      expect(base.having(sessions: { lt: 100, gt: 25 }).having(sessions: { lt: 50 }).send(:having_partial_path)).to eq '&having=sessions-lt[50],sessions-gt[25]'
     end
   end
 end
