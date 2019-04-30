@@ -23,12 +23,11 @@ module Flurry
 
     def merge(hsh, other)
       (hsh || {}).merge(other || {}) do |_key, old_val, new_val|
-        if old_val.is_a?(Hash)
+        case old_val
+        when Hash
           merge old_val, new_val
-        elsif old_val.is_a?(Array)
+        when Array
           old_val | new_val
-        elsif old_val.is_a?(String)
-          old_val << new_val
         else
           new_val
         end
