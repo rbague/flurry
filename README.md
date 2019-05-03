@@ -67,6 +67,7 @@ Flurry.from(:app_usage).format(:csv).time_zone('Europe/Madrid')
 - [ ] Filter by dimension (showing)
 - [x] Havings
 - [x] Response format
+- [ ] Custom response class
 
 ## Contributing
 
