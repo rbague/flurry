@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.5.0
+- Allow to chain calls to `showing`, `select`, `sort` and `having`
+
 ## v0.4.1
 - Allow to pass the time range as a String in `Flurry#between` call
 - Add HTTP timeout configuration in `Flurry#configure`, and as an argument to `Flurry#fetch`
