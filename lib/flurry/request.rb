@@ -1,5 +1,6 @@
 require 'httparty'
 require 'flurry/helper'
+require 'flurry/response'
 
 module Flurry
   class Request # :nodoc:
@@ -65,8 +66,10 @@ module Flurry
 
     def fetch(timeout = Flurry.configuration.timeout)
       options = {}
-      options[:timeout] = timeout if timeout
-      self.class.get(full_path, options).response
+      options[:timeout] = timeout
+      options[:format] = @format || Flurry.configuration.format
+
+      Response.new self.class.get(full_path, options)
     end
 
     protected
