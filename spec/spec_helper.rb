@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'webmock/rspec'
 require 'flurry'
 
 RSpec.configure do |config|
@@ -11,5 +12,14 @@ RSpec.configure do |config|
     Flurry.configure do |c|
       c.token = ENV['FLURRY_TOKEN']
     end
+  end
+
+  config.before(:each, http: true) do
+    stub_request(:get, /api-metrics.flurry.com/)
+      .to_return(lambda do |request|
+        format = request.uri.query_values['format']
+        format = 'json' if format.nil? || format.empty?
+        File.new("./spec/stubs/response.#{format}")
+      end)
   end
 end

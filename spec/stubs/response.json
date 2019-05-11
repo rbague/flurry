@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+X-RateLimit-Limit: 200.0
+X-RateLimit-Remaining: 200.0
+X-RateLimit-RefillPerSecond: 10.0
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: 
+Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS, PUT, PATCH
+Access-Control-Allow-Credentials: true
+Vary: Accept-Encoding
+Content-Length: 423
+Date: Sat, 11 May 2019 19:42:00 GMT
+Age: 0
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000
+Via: https/1.1 media-router-flurry7013.prod.media.bf1.yahoo.com (ApacheTrafficServer [c sSf ])
+Server: ATS
+Expect-CT: max-age=31536000, report-uri="http://csp.yahoo.com/beacon/csp?src=yahoocom-expect-ct-report-only"
+
+{"rows":[{"dateTime":"2019-01-13 00:00:00.000-08:00","sessions":21},{"dateTime":"2019-01-14 00:00:00.000-08:00","sessions":86},{"dateTime":"2019-01-15 00:00:00.000-08:00","sessions":95},{"dateTime":"2019-01-16 00:00:00.000-08:00","sessions":93},{"dateTime":"2019-01-17 00:00:00.000-08:00","sessions":55},{"dateTime":"2019-01-18 00:00:00.000-08:00","sessions":79},{"dateTime":"2019-01-19 00:00:00.000-08:00","sessions":28}]}

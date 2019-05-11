@@ -45,6 +45,20 @@ RSpec.describe Flurry do
       .to eq "/appUsage/day/app;show=id?token=#{token}&metrics=sessions&sort=sessions|desc&having=sessions-gt[10],sessions-lt[20]&dateTime=2019-01-20/2019-01-21"
   end
 
+  it 'should make a successful request', http: true do
+    base = Flurry.from(:app_usage).select(:sessions).between(@now - 7, @now)
+
+    json = base.format(:json).fetch
+    expect(json.body).not_to be_empty
+    expect(json.body).to be_a(Hash)
+    expect(json.code).to eq 200
+
+    csv = base.format(:csv).fetch
+    expect(csv.body).not_to be_empty
+    expect(csv.body).to be_a(Array)
+    expect(csv.code).to eq 200
+  end
+
   describe 'path partials' do
     it 'should build base partial' do
       expect(Flurry.from(:app_usage).send(:base_partial_path)).to eq '/appUsage/day'

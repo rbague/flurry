@@ -1,0 +1,27 @@
+HTTP/1.1 200 OK
+Content-Disposition: attachment; filename=data-appUsage-day_2019-01-13_2019-01-20.csv
+Content-Type: text/csv; charset=utf-8
+X-RateLimit-Limit: 200.0
+X-RateLimit-Remaining: 200.0
+X-RateLimit-RefillPerSecond: 10.0
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: 
+Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS, PUT, PATCH
+Access-Control-Allow-Credentials: true
+Content-Length: 263
+Date: Sat, 11 May 2019 19:42:13 GMT
+Age: 1
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000
+Via: https/1.1 media-router-flurry7019.prod.media.bf1.yahoo.com (ApacheTrafficServer [c sSf ])
+Server: ATS
+Expect-CT: max-age=31536000, report-uri="http://csp.yahoo.com/beacon/csp?src=yahoocom-expect-ct-report-only"
+
+dateTime,sessions
+"2019-01-13 00:00:00.000-08:00",21
+"2019-01-14 00:00:00.000-08:00",86
+"2019-01-15 00:00:00.000-08:00",95
+"2019-01-16 00:00:00.000-08:00",93
+"2019-01-17 00:00:00.000-08:00",55
+"2019-01-18 00:00:00.000-08:00",79
+"2019-01-19 00:00:00.000-08:00",28
