@@ -43,7 +43,7 @@ Once an API token has been set, requesting data is really easy
 require 'flurry'
 
 # Gets todays the number of sessions from appUsage table grouped by day (default)
-Flurry.from(:app_usage).select(:sessions).between(Date.today).fetch # HTTP::Response
+Flurry.from(:app_usage).select(:sessions).between(Date.today).fetch # Flurry::Response
 
 # Same as above but grouping by hour
 Flurry.from(:app_usage, :hour).select(:sessions).between(Date.today).fetch
@@ -67,7 +67,8 @@ Flurry.from(:app_usage).format(:csv).time_zone('Europe/Madrid')
 - [ ] Filter by dimension (showing)
 - [x] Havings
 - [x] Response format
-- [ ] Custom response class
+- [x] Custom response class
+- [ ] Add documentation
 
 ## Contributing
 
