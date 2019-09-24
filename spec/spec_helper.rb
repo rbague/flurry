@@ -19,7 +19,7 @@ RSpec.configure do |config|
       .to_return(lambda do |request|
         format = request.uri.query_values['format']
         format = 'json' if format.nil? || format.empty?
-        File.new("./spec/stubs/response.#{format}")
+        File.new(File.join(__dir__, 'stubs', "response.#{format}"))
       end)
   end
 end
