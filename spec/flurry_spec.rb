@@ -48,6 +48,7 @@ RSpec.describe Flurry do
   it 'should make a successful JSON request', http: true do
     response = Flurry.from(:app_usage).select(:sessions).between(@now - 7, @now).format(:json).fetch
 
+    expect(response).to be_a(Flurry::Response)
     expect(response.body).not_to be_empty
     expect(response.body).to be_a(Hash)
     expect(response.code).to eq 200
@@ -56,6 +57,7 @@ RSpec.describe Flurry do
   it 'should make a successful CSV request', http: true do
     response = Flurry.from(:app_usage).select(:sessions).between(@now - 7, @now).format(:csv).fetch
 
+    expect(response).to be_a(Flurry::Response)
     expect(response.body).not_to be_empty
     expect(response.body).to be_a(Array)
     expect(response.code).to eq 200
