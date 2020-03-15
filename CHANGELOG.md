@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.6.0
+- Add response tests with webmock
+- Return `Flurry::Response` in `#fetch` instead of `HTTP::Response`. That implies
+  - `#body` return the parsed response (`Hash` for JSON, `Array` for CSV)
+  - `#code` now returns an integer, and `#message` the response status text
+  - You can still get the `HTTP::Response` object by calling `#raw`.
+
 ## v0.5.0
 - Allow to chain calls to `showing`, `select`, `sort` and `having`
 
