@@ -1,8 +1,9 @@
 language: ruby
+os: linux
 rvm:
   - 2.3.0
   - 2.4.0
   - 2.5.0
   - 2.6.0
 before_install:
-  - gem install bundler
+  - gem install bundler -v "2.0.1"
