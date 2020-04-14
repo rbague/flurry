@@ -49,7 +49,6 @@ RSpec.describe Flurry do
     response = Flurry.from(:app_usage).select(:sessions).between(@now - 7, @now).format(:json).fetch
 
     expect(response).to be_a(Flurry::Response)
-    puts response.raw.method(:message).source_location
     expect(response.body).not_to be_empty
     expect(response.body).to be_a(Hash)
     expect(response.code).to eq 200
